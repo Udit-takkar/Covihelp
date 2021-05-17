@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit details</title>
+</head>
+
+<body>
+    <h1>Edit details</h1>
+    <form action="/users/<%=user._id%>?_method=PUT" method="POST">
+        <div>
+            <label for="name">Name</label>
+            <input type="text" id="name" name="user[name]" value="<%=user.title %>">
+        </div>
+        <div>
+            <label for="location">Location</label>
+            <input type="text" id="user" name="user[location]" value="<%= user.location%>">
+        </div>
+        <button>Update your details</button>
+    </form>
+    <a href="/users/<%= user._id%>">Back To All volunteers</a>
+
+</body>
+
+</html>
