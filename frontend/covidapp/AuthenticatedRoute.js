@@ -1,13 +1,11 @@
 /* authenticated router */
-import React, { Component } from "react";
+import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import UserServiceApi from "./api/UserServiceApi";
 
 function AuthenticatedRoute(props) {
-  //This class authenticates and verifies the user, otherwise redirects the web to the login page.
-
   if (UserServiceApi.isUserLoggedIn()) {
-    return <Route {...this.props} />;
+    return <Route {...props} />;
   } else {
     return <Redirect to="/" />;
   }
