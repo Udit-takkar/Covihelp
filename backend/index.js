@@ -1,39 +1,24 @@
 const express=require('express') ;
+const connectDB=require('./config/db')
+
 const app=express() ;
-const path = require('path');
-const mongoose = require('mongoose');
-const methodOverride = require('method-override');
-const User = require('./models/user');
-const users=require('./routes/users')
 
-mongoose.connect('mongodb://localhost:27017/covid', {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true
-});
+// connect database
+connectDB() ;
 
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", () => { 
-    console.log("Database connected");
-});
-
-
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'))
-
+// Init Middleware
+app.use(express.json({extended:false})) ;
 app.use(express.urlencoded({ extended: true }));
-app.use(methodOverride('_method'));
+// app.use(methodOverride('_method'));
 
-app.use('/users',users)
+const PORT=process.env.PORT || 8000
 
-// home page
 app.get('/',(req,res)=>{
-    res.render('home')
+    res.json({msg:'hello'})
 })
 
+// Define Routes
+app.use('/api/auth',require('./routes/auth'))
+app.use('/api/users',require('./routes/users'))
 
-
-app.listen(8080,()=>{
-    console.log('serving on port 8080')
-})
+app.listen(PORT,()=>console.log(`Server started on port ${PORT}`))
