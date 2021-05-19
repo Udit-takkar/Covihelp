@@ -4,21 +4,26 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Link as RouterLink } from "react-router-dom";
 import UserServiceApi from "../api/UserServiceApi";
 import uuid from "react-uuid";
+import { headersData, LoggedInHeader, staffHeader } from "../util/HeaderItems";
 
 const useStyles = makeStyles({
   header: {
-    backgroundColor: "#400CCC",
+    backgroundColor: "white",
+    boxShadow: "none",
     paddingRight: "79px",
-    paddingLeft: "118px",
+    color: "rgb(0,51,102)",
   },
   logo: {
     fontFamily: "Work Sans, sans-serif",
     fontWeight: 600,
-    color: "#FFFEFE",
-    textAlign: "left",
+    color: "rgb(0,51,102)",
+    fontSize: "25px",
+    position: "relative",
+    left: "55px",
   },
   toolbar: {
     display: "flex",
+    width: "100vw",
     justifyContent: "space-between",
   },
   menuButton: {
@@ -29,119 +34,23 @@ const useStyles = makeStyles({
   },
 });
 
-const headersData = [
-  {
-    label: "Home",
-    href: "/",
-  },
-  {
-    label: "Locations",
-    href: "/locations",
-  },
-  {
-    label: "Sign Up",
-    href: "/signup",
-  },
-  {
-    label: "Log in",
-    href: "/login",
-  },
-];
-const LoggedInHeader = [
-  {
-    label: "Home",
-    href: "/",
-  },
-  {
-    label: "Locations",
-    href: "/locations",
-  },
-  {
-    label: "my profile",
-    href: "/myprofile",
-  },
-  {
-    label: "my bookings",
-    href: "/mybookings",
-  },
-  {
-    label: "dashboard",
-    href: "/dashboard",
-  },
-  {
-    label: "Log Out",
-    href: "/",
-  },
-];
-const staffHeader = [
-  {
-    label: "Home",
-    href: "/",
-  },
-  {
-    label: "Locations",
-    href: "/locations",
-  },
-  {
-    label: "Staff Dashboard",
-    href: "/staff",
-  },
-  {
-    label: "Log Out",
-    href: "/",
-  },
-];
-
 function Header() {
   const classes = useStyles();
   //   const isUserLoggedIn = UserServiceApi.isUserLoggedIn();
   //   const isUserStaff = UserServiceApi.isUserStaff();
-  const isUserLoggedIn = true;
-  const isUserStaff = true;
+  const isUserLoggedIn = false;
+  const isUserStaff = false;
   const displayDesktop = () => {
     return (
       <Toolbar className={classes.toolbar}>
         {covidHelp}
         <div>
-          {!isUserLoggedIn && getMenuButtons()}
+          {!isUserLoggedIn && getMenuButtons(headersData)}
           {isUserLoggedIn && (
             <>
-              {!isUserStaff &&
-                LoggedInHeader.map(({ label, href }) => {
-                  return (
-                    <Button
-                      {...{
-                        key: label,
-                        color: "inherit",
-                        to: href,
-                        component: RouterLink,
-                        className: classes.menuButton,
-                      }}
-                    >
-                      {label}
-                    </Button>
-                  );
-                })}
-            </>
-          )}
-          {isUserLoggedIn && (
-            <>
-              {isUserStaff &&
-                staffHeader.map(({ label, href }) => {
-                  return (
-                    <Button
-                      {...{
-                        key: label,
-                        color: "inherit",
-                        to: href,
-                        component: RouterLink,
-                        className: classes.menuButton,
-                      }}
-                    >
-                      {label}
-                    </Button>
-                  );
-                })}
+              {isUserStaff
+                ? getMenuButtons(staffHeader)
+                : getMenuButtons(LoggedInHeader)}
             </>
           )}
         </div>
@@ -154,8 +63,8 @@ function Header() {
     </Typography>
   );
 
-  const getMenuButtons = () => {
-    return headersData.map(({ label, href }) => {
+  const getMenuButtons = (menuItems) => {
+    return menuItems.map(({ label, href }) => {
       return (
         <Button
           {...{
