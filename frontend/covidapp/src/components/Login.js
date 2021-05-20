@@ -9,10 +9,13 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import { useDispatch } from "react-redux";
+import { login } from "../features/authentication/auth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: "140px",
+    backgroundColor: "white",
   },
   paper: {
     marginTop: theme.spacing(8),
@@ -35,13 +38,15 @@ const useStyles = makeStyles((theme) => ({
 
 export default function LogIn() {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [formState, setFormState] = useState({ email: "", password: "" });
   const handleChange = (e) => {
     setFormState({ ...formState, [e.target.name]: e.target.value });
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formState);
+    const res = await dispatch(login(formState));
+    console.log(res);
   };
 
   return (
