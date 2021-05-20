@@ -21,9 +21,52 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-// @route    POST api/auth
+// @route     PUT api/auth
+// @desc     Get logged in user
+// @access   Private
+router.put('/:id', auth, async (req, res) => {
+  const{firstname,lastname,email,password,usertype}=req.body
+   const userFields = {};
+  if (firstname) userFields.firstname = firstname;
+  if (lastname) userFields.lastname = lastname;
+  if (email) userFields.email = email;
+  if (password) userFields.password = password;
+  if (usertype) userFields.usertype = usertype;
+
+  try {
+    let  user = await User.findById(req.params.id) ;
+    if (!user) return res.status(404).json({msg: 'User not found'});
+    user = await User.findByIdAndUpdate(
+      req.params.id,
+      {$set: userFields},
+      {new: true},
+    );
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ msg: 'Server Error' });
+  }
+});
+
+// @route    Delete api/auth
 // @desc     Auth user and get token
 // @access   Public
+router.delete('/:id', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) return res.status(404).json({msg: 'User not found'});
+
+    await User.findByIdAndRemove(req.params.id);
+
+    res.json({msg: 'User removed'});
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+
 router.post(
   '/',
   [
