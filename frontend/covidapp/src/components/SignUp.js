@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: "125px",
     minWidth: "45vw",
+    backgroundColor: "white",
   },
   paper: {
     marginTop: theme.spacing(8),
