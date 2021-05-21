@@ -3,14 +3,19 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-
+import { useDispatch } from "react-redux";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
-
+import InputLabel from "@material-ui/core/InputLabel";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import { signup } from "../features/authentication/auth";
+import { Alert } from "@material-ui/lab";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,23 +42,46 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  formControl: {
+    width: "100%",
+    marginTop: theme.spacing(1),
+  },
 }));
 
 export default function SignUp() {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const [errorMessage, setErrorMessage] = useState(null);
   const [formState, setFormState] = useState({
-    firstName: "",
-    lastName: "",
+    firstname: "",
+    lastname: "",
     email: "",
     password: "",
+    usertype: "",
   });
   const handleChange = (e) => {
     setFormState({ ...formState, [e.target.name]: e.target.value });
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(formState);
+    const res = await dispatch(signup(formState));
+    console.log(res);
+
+    if (res.type === "auth/signup/rejected") {
+      setErrorMessage(res.payload);
+      console.log(res.payload);
+    } else {
+      console.log(res.payload);
+      setErrorMessage(null);
+      setFormState({
+        firstname: "",
+        lastname: "",
+        email: "",
+        password: "",
+        usertype: "",
+      });
+    }
   };
   return (
     <Container component="main" maxWidth="xs" className={classes.root}>
@@ -65,18 +93,19 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
+        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
                 autoComplete="fname"
-                name="firstName"
+                name="firstname"
                 variant="outlined"
                 required
                 fullWidth
-                id="firstName"
+                id="firstname"
                 label="First Name"
-                value={formState.firstName}
+                value={formState.firstname}
                 onChange={handleChange}
                 autoFocus
               />
@@ -86,10 +115,10 @@ export default function SignUp() {
                 variant="outlined"
                 required
                 fullWidth
-                id="lastName"
+                id="lastname"
                 label="Last Name"
-                name="lastName"
-                value={formState.lastName}
+                name="lastname"
+                value={formState.lastname}
                 onChange={handleChange}
                 autoComplete="lname"
               />
@@ -121,6 +150,27 @@ export default function SignUp() {
                 autoComplete="current-password"
               />
             </Grid>
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl variant="outlined" className={classes.formControl}>
+              <InputLabel htmlFor="outlined-age-native-simple">
+                Select Account Type
+              </InputLabel>
+              <Select
+                native
+                value={formState.usertype}
+                onChange={handleChange}
+                label="usertype"
+                inputProps={{
+                  name: "usertype",
+                  id: "outlined-age-native-simple",
+                }}
+              >
+                <option aria-label="None" value="" />
+                <option value={"Customer"}>Customer</option>
+                <option value={"Driver"}>Driver</option>
+              </Select>
+            </FormControl>
           </Grid>
           <Button
             type="submit"
