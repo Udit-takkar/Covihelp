@@ -8,47 +8,61 @@ const initialState = {
   firstName: "",
   lastName: "",
   email: "",
+  usertype: "",
 };
 
-const loginURL = "https://localhost:8080/api/auth";
-const registerURL = "https://localhost:8080/api/users";
+// response:
+// message: "Created user of id '60a7909eb083ec326c1d84e3' successfully"
+// user:
+// email: "testing6@gmail.com"
+// firstname: "testing"
+// lastname: "testing"
+// token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjBhNzkwOWViMDgzZWMzMjZjMWQ4NGUzIn0sImlhdCI6MTYyMTU5NDI3MCwiZXhwIjoxNjIxOTU0MjcwfQ._8Yb7-Af_7e9GSzXf_UC_pO5c8FcSyHXb2TF_4vzJMs"
+// usertype: "Customer"
+// _id: "60a7909eb083ec326c1d84e3"
+
+const loginURL = "http://localhost:8000/api/auth";
+const registerURL = "http://localhost:8000/api/users";
 
 export const signup = createAsyncThunk(
   "auth/signup",
-  async ({ firstName, lastName, email, password }, { rejectWithValue }) => {
+  async (
+    { firstname, lastname, email, password, usertype },
+    { rejectWithValue }
+  ) => {
     try {
       const res = await axios.post(registerURL, {
-        user: {
-          firstName,
-          lastName,
-          email,
-          password,
-        },
+        firstname,
+        lastname,
+        email,
+        usertype,
+        password,
       });
-      localStorage.setItem("token", res.data.user.token);
-      return res.data;
+      console.log(res.data.response);
+      localStorage.setItem("token", res.data.response.user.token);
+      return res.data.response;
     } catch (e) {
-      return rejectWithValue(e.response);
+      console.log(e.response.data);
+      return rejectWithValue(e.response.data.msg);
     }
   }
 );
 
 export const login = createAsyncThunk(
   "auth/login",
-  async ({ email, password }, { rejectWithValue }) => {
+  async ({ email, password, usertype }, { rejectWithValue }) => {
     try {
       const res = await axios.post(loginURL, {
-        user: {
-          email,
-          password,
-        },
+        email,
+        password,
+        usertype,
       });
-
-      localStorage.setItem("token", res.data.user.token);
-      return res.data;
+      console.log(res.data.response);
+      localStorage.setItem("token", res.data.response.user.token);
+      return res.data.response;
     } catch (err) {
-      console.log(err.response);
-      return rejectWithValue(err.response);
+      console.log(err.response.data);
+      return rejectWithValue(err.response.data.msg);
     }
   }
 );
@@ -66,6 +80,7 @@ export const authSlice = createSlice({
         firstName: "",
         lastName: "",
         email: "",
+        usertype: "",
       });
     },
     [login.fulfilled]: (state, action) => {
@@ -74,9 +89,10 @@ export const authSlice = createSlice({
         loading: false,
         error: null,
         isLoggedIn: true,
-        firstName: action.payload.user.username,
-        lastName: action.payload.user.lastName,
+        firstName: action.payload.user.firstname,
+        lastName: action.payload.user.lastname,
         email: action.payload.user.email,
+        usertype: action.payload.user.usertype,
       });
     },
     [login.rejected]: (state, action) => {
@@ -87,6 +103,7 @@ export const authSlice = createSlice({
         firstName: "",
         lastName: "",
         email: "",
+        usertype: "",
       });
     },
     [signup.pending]: (state, action) => {
@@ -97,6 +114,7 @@ export const authSlice = createSlice({
         firstName: "",
         lastName: "",
         email: "",
+        usertype: "",
       });
     },
     [signup.fulfilled]: (state, action) => {
@@ -105,9 +123,10 @@ export const authSlice = createSlice({
         loading: false,
         error: null,
         isLoggedIn: true,
-        firstName: action.payload.user.username,
-        lastName: action.payload.user.lastName,
+        firstName: action.payload.user.firstname,
+        lastName: action.payload.user.lastname,
         email: action.payload.user.email,
+        usertype: action.payload.user.usertype,
       });
     },
     [signup.rejected]: (state, action) => {
@@ -118,6 +137,7 @@ export const authSlice = createSlice({
         firstName: "",
         lastName: "",
         email: "",
+        usertype: "",
       });
     },
   },
