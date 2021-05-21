@@ -84,7 +84,6 @@ function Landing() {
         container
         justify='center'
       >
-
           <Menu />
       </Grid>
     </Grid>

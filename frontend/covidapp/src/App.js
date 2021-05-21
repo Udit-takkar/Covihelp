@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import Landing from "./components/Landing Page/Landing";
+import Footer from './components/Footer';
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
           {/* <Route path="/locations/:id" component={LocationShowPage} />
           <Route path="/locations" component={MapContainer} /> */}
         </Switch>
-        {/* <Footer /> */}
+        <Footer />
       </Router>
     </div>
   );
