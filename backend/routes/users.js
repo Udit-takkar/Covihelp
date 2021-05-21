@@ -1,25 +1,25 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const config = require('config');
-const { check, validationResult } = require('express-validator');
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const config = require("config");
+const { check, validationResult } = require("express-validator");
 
-const User = require('../models/user');
+const User = require("../models/user");
 
 // @route    POST api/users
 // @desc     Register a user
 // @access   Public
 router.post(
-  '/',
+  "/",
   [
-    check('firstname', 'Please add first  name').not().isEmpty(),
-    check('lastname', 'Please add  last name').not().isEmpty(),
-    check('email', 'Please include an valid email').isEmail(),
-    check('usertype', 'Please include a valid usertype').not().isEmpty(),
+    check("firstname", "Please add first  name").not().isEmpty(),
+    check("lastname", "Please add  last name").not().isEmpty(),
+    check("email", "Please include an valid email").isEmail(),
+    check("usertype", "Please include a valid usertype").not().isEmpty(),
     check(
-      'password',
-      'Please enter a password with 6 or more character'
+      "password",
+      "Please enter a password with 6 or more character"
     ).isLength({ min: 6 }),
   ],
   async (req, res) => {
@@ -28,14 +28,14 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password } = req.body;
+    const { firstname, lastname, email, password } = req.body;
 
     try {
       let user = await User.findOne({ email });
 
       if (user) {
         return res.status(400).json({
-          msg: 'User already exists.',
+          msg: "User already exists.",
         });
       }
 
@@ -55,18 +55,29 @@ router.post(
 
       jwt.sign(
         payload,
-        config.get('jwtSecret'),
+        config.get("jwtSecret"),
         {
           expiresIn: 360000,
         },
         (err, token) => {
           if (err) throw err;
-          res.json({ token });
+          const response = {
+            message: `Created user of id '${user.id}' successfully`,
+            user: {
+              _id: user.id,
+              firstname: user.firstname,
+              lastname: user.lastname,
+              email: user.email,
+              usertype: user.usertype,
+              token,
+            },
+          };
+          return res.status(201).json({ response });
         }
       );
     } catch (err) {
       console.error(err.message);
-      res.status(500).send('Server error');
+      res.status(500).send("Server error");
     }
   }
 );
