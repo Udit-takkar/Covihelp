@@ -5,14 +5,66 @@ import MapGL from "react-map-gl";
 import DeckGL, { GeoJsonLayer } from "deck.gl";
 import Geocoder from "react-map-gl-geocoder";
 import { makeStyles } from "@material-ui/core/styles";
-import { Marker } from "react-map-gl";
+import { Marker, NavigationControl, FullscreenControl } from "react-map-gl";
+import CityPin from "../util/city-pin";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
 
 const token = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
+
+const CITIES = [
+  {
+    latitude: 28.6691,
+    longitude: 77.0929,
+  },
+  {
+    latitude: 28.7383,
+    longitude: 77.0822,
+  },
+  {
+    latitude: 28.66667000000001,
+    longitude: 77.21667,
+  },
+];
+
+const _renderMarker = (city, index) => {
+  return (
+    <Marker
+      key={`marker-${index}`}
+      longitude={city.longitude}
+      latitude={city.latitude}
+    >
+      <CityPin size={20} />
+    </Marker>
+  );
+};
 
 const useStyles = makeStyles({
   root: {
     height: "100vh",
     marginTop: "75px",
+  },
+  navStyle: {
+    position: "absolute",
+    top: 36,
+    left: 0,
+    padding: "10px",
+  },
+  fullscreenControlStyle: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    padding: "10px",
+  },
+  map: {
+    position: "absolute",
+    top: "200px",
+    bottom: "0",
+    width: "100%",
+  },
+  BookingButton: {
+    marginLeft: "50px",
   },
 });
 
@@ -60,49 +112,54 @@ const SearchableMap = () => {
 
   return (
     <div className={classes.root}>
-      <h1
-        style={{ textAlign: "center", fontSize: "25px", fontWeight: "bolder" }}
+      <Grid
+        container
+        className={classes.instructionText}
+        justify="center"
+        alignItems="center"
       >
-        Use the search bar to find a location on the map
-      </h1>
-      <MapGL
-        ref={mapRef}
-        {...viewport}
-        mapStyle="mapbox://styles/mapbox/streets-v9"
-        width="100%"
-        height="90%"
-        onViewportChange={setViewPort}
-        mapboxApiAccessToken={token}
-      >
-        {/* <button className="add-btn" onClick={this.addMarker}>Add</button>
-         <Marker
-            
-              latitude={marker.latitude}
-              longitude={marker.longitude}
-            >
-              <img src="pin.png" alt="marker"/>
-            </Marker> */}
-        {/* {markers.map((marker, idx) => {
-          return (
-            <Marker
-              key={idx}
-              latitude={marker.latitude}
-              longitude={marker.longitude}
-            >
-              <img src="pin.png" alt="marker"/>
-            </Marker>
-          )
-        })
-        } */}
-        <Geocoder
-          mapRef={mapRef}
-          onResult={handleOnResult}
-          onViewportChange={handleGeocoderViewportChange}
+        <Grid item>
+          <Typography variant="h5" gutterBottom>
+            Below Map shows all Available Drivers
+          </Typography>
+          <Typography variant="h5" gutterBottom>
+            Use the Search Bar to Enter Your Area
+          </Typography>
+        </Grid>
+        <Grid item className={classes.BookingButton}>
+          <Button variant="contained" color="primary">
+            Place Bookings
+          </Button>
+        </Grid>
+      </Grid>
+      <div className={classes.map}>
+        <MapGL
+          ref={mapRef}
+          {...viewport}
+          mapStyle="mapbox://styles/mapbox/streets-v9"
+          width="100%"
+          height="90%"
+          onViewportChange={setViewPort}
           mapboxApiAccessToken={token}
-          position="top-left"
-        />
-      </MapGL>
-      <DeckGL {...viewport} layers={[searchResultLayer]} />
+        >
+          {CITIES.map(_renderMarker)}
+          <div className={classes.fullscreenControlStyle}>
+            <FullscreenControl />
+          </div>
+          <div className={classes.navStyle}>
+            <NavigationControl />
+          </div>
+
+          <Geocoder
+            mapRef={mapRef}
+            onResult={handleOnResult}
+            onViewportChange={handleGeocoderViewportChange}
+            mapboxApiAccessToken={token}
+            position="top-left"
+          />
+        </MapGL>
+        <DeckGL {...viewport} layers={[searchResultLayer]} />
+      </div>
     </div>
   );
 };

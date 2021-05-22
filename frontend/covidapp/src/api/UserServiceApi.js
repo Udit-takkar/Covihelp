@@ -11,6 +11,13 @@ class UserServiceApi {
     if (token === null) return "";
     return token.slice(TOKEN_HEADER_LENGTH);
   }
+  isUserLoggedIn() {
+    let user = localStorage.getItem(TOKEN_SESSION_ATTRIBUTE_NAME);
+    if (user === null) {
+      return false;
+    }
+    return true;
+  }
 }
 
 export default new UserServiceApi();

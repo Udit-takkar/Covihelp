@@ -6,8 +6,11 @@ import SignUp from "./components/SignUp";
 import Landing from "./components/Landing Page/Landing";
 import SearchableMap from "./components/MapContainer";
 import Footer from "./components/Footer";
+import AuthenticatedRoute from "./AuthenticatedRoute";
+import MyProfile from "./components/MyProfile";
 
 function App() {
+  const isUserStaff = false;
   return (
     <div className="App">
       <Router>
@@ -18,6 +21,9 @@ function App() {
           <Route path="/login" component={Login} />
           {/* <Route path="/locations/:id" component={LocationShowPage} /> */}
           <Route path="/locations" component={SearchableMap} />
+          {!isUserStaff && (
+            <AuthenticatedRoute path="/myprofile" component={MyProfile} />
+          )}
         </Switch>
         <Footer />
       </Router>
