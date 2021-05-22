@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import photo from "./AmbulanceIllustration.jpg";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link as RouterLink } from "react-router-dom";
-import { AppBar, Toolbar, Typography, Button, Grid } from "@material-ui/core";
+import { Typography, Button, Grid, Box} from "@material-ui/core";
+
+import Menu from './Menu';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,10 +41,15 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: "4px",
     backgroundColor: "rgb(0,51,102)",
   },
+  section: {
+    padding: "0px 75px 75px 75px"
+  },
+
 }));
 
 function Landing() {
   const classes = useStyles();
+
   return (
     <Grid
       className={classes.root}
@@ -72,6 +79,12 @@ function Landing() {
       </Grid>
       <Grid item xs={6}>
         <img className={classes.photo} src={photo} alt="main" />
+      </Grid>
+      <Grid
+        container
+        justify='center'
+      >
+          <Menu />
       </Grid>
     </Grid>
   );
