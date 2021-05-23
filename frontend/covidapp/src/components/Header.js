@@ -12,6 +12,7 @@ const useStyles = makeStyles({
     boxShadow: "none",
     paddingRight: "79px",
     color: "rgb(0,51,102)",
+    width: "100vw",
   },
   logo: {
     fontFamily: "Work Sans, sans-serif",
@@ -23,7 +24,7 @@ const useStyles = makeStyles({
   },
   toolbar: {
     display: "flex",
-    width: "100vw",
+
     justifyContent: "space-between",
   },
   menuButton: {
@@ -38,7 +39,7 @@ function Header() {
   const classes = useStyles();
   //   const isUserLoggedIn = UserServiceApi.isUserLoggedIn();
   //   const isUserStaff = UserServiceApi.isUserStaff();
-  const isUserLoggedIn = false;
+  const isUserLoggedIn = true;
   const isUserStaff = false;
   const displayDesktop = () => {
     return (

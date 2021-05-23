@@ -144,3 +144,8 @@ export const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
+export const isUserLoggedIn = (state) => state.auth.isLoggedIn;
+export const getName = (state) => state.auth.username;
+export const getEmail = (state) => state.auth.email;
+
+export const getUserType = (state) => state.auth.usertype;
