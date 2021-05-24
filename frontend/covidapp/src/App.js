@@ -8,6 +8,8 @@ import SearchableMap from "./components/MapContainer";
 import Footer from "./components/Footer";
 import AuthenticatedRoute from "./AuthenticatedRoute";
 import MyProfile from "./components/MyProfile";
+import DashBoard from "./components/DashBoard";
+import MyBookingPage from "./components/BookingPage";
 
 function App() {
   const isUserStaff = false;
@@ -23,6 +25,15 @@ function App() {
           <Route path="/locations" component={SearchableMap} />
           {!isUserStaff && (
             <AuthenticatedRoute path="/myprofile" component={MyProfile} />
+          )}
+          {!isUserStaff && (
+            <AuthenticatedRoute
+              path="/dashboard"
+              component={(props) => <DashBoard {...props} />}
+            />
+          )}
+          {!isUserStaff && (
+            <AuthenticatedRoute path="/mybookings" component={MyBookingPage} />
           )}
         </Switch>
         <Footer />

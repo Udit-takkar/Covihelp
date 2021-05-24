@@ -7,11 +7,11 @@ const GITHUB_REPO_LINK = "https://github.com/kumarshobhit/Covihelp";
 
 const useStyles = makeStyles((theme) => ({
   footer: {
-    // position: "absolute",
-    // left: 0,
-    // bottom: 0,
-    // right: 0,
-    maxWidth: "100%",
+    position: "relative",
+    left: 0,
+    bottom: 0,
+    right: 0,
+    width: "100%",
     padding: "30px 75px",
     marginTop: "20px",
     boxShadow: "0px 5px 5px 5px grey",

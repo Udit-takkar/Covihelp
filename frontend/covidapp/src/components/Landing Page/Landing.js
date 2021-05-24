@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import photo from "./AmbulanceIllustration.jpg";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link as RouterLink } from "react-router-dom";
-import { Typography, Button, Grid, Box} from "@material-ui/core";
+import { Typography, Button, Grid, Box } from "@material-ui/core";
+import { isUserLoggedIn } from "../../features/authentication/auth";
+import { useSelector } from "react-redux";
 
-import Menu from './Menu';
+import Menu from "./Menu";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,14 +44,13 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "rgb(0,51,102)",
   },
   section: {
-    padding: "0px 75px 75px 75px"
+    padding: "0px 75px 75px 75px",
   },
-
 }));
 
 function Landing() {
   const classes = useStyles();
-
+  const isLoggedIn = useSelector(isUserLoggedIn);
   return (
     <Grid
       className={classes.root}
@@ -64,27 +65,42 @@ function Landing() {
         <Typography className={classes.subtext} component="h1" variant="h5">
           Free signup and booking in less than 5 minutes
         </Typography>
-        <Button
-          {...{
-            color: "inherit",
-            to: "/signup",
-            component: RouterLink,
-            className: classes.signupButton,
-          }}
-          variant="contained"
-          color="primary"
-        >
-          Sign up
-        </Button>
+
+        {isLoggedIn ? (
+          <Button
+            {...{
+              color: "inherit",
+              to: "/mybookings",
+              component: RouterLink,
+              className: classes.signupButton,
+            }}
+            variant="contained"
+            color="primary"
+          >
+            Book Now
+          </Button>
+        ) : (
+          <>
+            <Button
+              {...{
+                color: "inherit",
+                to: "/signup",
+                component: RouterLink,
+                className: classes.signupButton,
+              }}
+              variant="contained"
+              color="primary"
+            >
+              Sign up
+            </Button>
+          </>
+        )}
       </Grid>
       <Grid item xs={6}>
         <img className={classes.photo} src={photo} alt="main" />
       </Grid>
-      <Grid
-        container
-        justify='center'
-      >
-          <Menu />
+      <Grid container justify="center">
+        <Menu />
       </Grid>
     </Grid>
   );
