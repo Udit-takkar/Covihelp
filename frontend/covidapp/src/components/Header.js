@@ -5,6 +5,10 @@ import { Link as RouterLink } from "react-router-dom";
 import UserServiceApi from "../api/UserServiceApi";
 import uuid from "react-uuid";
 import { headersData, LoggedInHeader, staffHeader } from "../util/HeaderItems";
+import { logoutUser } from "../features/authentication/auth";
+import { useDispatch } from "react-redux";
+import { isUserLoggedIn, getUserType } from "../features/authentication/auth";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles({
   header: {
@@ -37,17 +41,24 @@ const useStyles = makeStyles({
 
 function Header() {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const checkLoggedIn = useSelector(isUserLoggedIn);
+  const usertype = useSelector(getUserType);
+  const handleLogout = async () => {
+    localStorage.removeItem("token");
+    await dispatch(logoutUser());
+  };
   //   const isUserLoggedIn = UserServiceApi.isUserLoggedIn();
   //   const isUserStaff = UserServiceApi.isUserStaff();
-  const isUserLoggedIn = true;
-  const isUserStaff = false;
+  const isLoggedIn = checkLoggedIn;
+  const isUserStaff = usertype === "Admin" ? true : false;
   const displayDesktop = () => {
     return (
       <Toolbar className={classes.toolbar}>
         {covidHelp}
         <div>
-          {!isUserLoggedIn && getMenuButtons(headersData)}
-          {isUserLoggedIn && (
+          {!isLoggedIn && getMenuButtons(headersData)}
+          {isLoggedIn && (
             <>
               {isUserStaff
                 ? getMenuButtons(staffHeader)
@@ -75,6 +86,7 @@ function Header() {
             component: RouterLink,
             className: classes.menuButton,
           }}
+          onClick={label === "Log Out" ? handleLogout : null}
         >
           {label}
         </Button>

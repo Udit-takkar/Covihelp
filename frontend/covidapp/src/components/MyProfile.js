@@ -70,7 +70,7 @@ function MyProfile() {
         <Button
           style={{ marginTop: "30px" }}
           variant="contained"
-          color="secondary"
+          color="primary"
         >
           Go To Your Bookings
         </Button>

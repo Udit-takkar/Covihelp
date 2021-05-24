@@ -16,6 +16,7 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { Alert } from "@material-ui/lab";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function LogIn() {
+  const history = useHistory();
   const classes = useStyles();
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState(null);
@@ -67,6 +69,7 @@ export default function LogIn() {
         password: "",
         usertype: "",
       });
+      history.push("/");
     } else {
       setErrorMessage(res.payload);
       console.log(res.payload);
