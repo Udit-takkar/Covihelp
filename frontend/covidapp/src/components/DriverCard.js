@@ -47,7 +47,7 @@ function DriverCard({
           <strong> Address</strong> : {address}
         </Typography>
         <Typography className={classes.details} variant="h5" gutterBottom>
-          <strong> Distance from You </strong> : {distance}
+          <strong> Distance from You </strong> : {distance} KM
         </Typography>
       </Grid>
       <Grid>
@@ -56,7 +56,7 @@ function DriverCard({
           variant="contained"
           color="primary"
           onClick={() => {
-            confirmBooking({}); // Build this function
+            confirmBooking(id); // Build this function
           }}
         >
           Confirm Booking

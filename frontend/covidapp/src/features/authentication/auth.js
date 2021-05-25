@@ -9,6 +9,7 @@ const initialState = {
   lastName: "",
   email: "",
   usertype: "",
+  id: null,
 };
 
 // response:
@@ -80,6 +81,7 @@ export const authSlice = createSlice({
         lastName: "",
         email: "",
         usertype: "",
+        id: null,
       });
     },
   },
@@ -93,6 +95,7 @@ export const authSlice = createSlice({
         lastName: "",
         email: "",
         usertype: "",
+        id: null,
       });
     },
     [login.fulfilled]: (state, action) => {
@@ -105,6 +108,7 @@ export const authSlice = createSlice({
         lastName: action.payload.user.lastname,
         email: action.payload.user.email,
         usertype: action.payload.user.usertype,
+        id: action.payload.user._id,
       });
     },
     [login.rejected]: (state, action) => {
@@ -116,6 +120,7 @@ export const authSlice = createSlice({
         lastName: "",
         email: "",
         usertype: "",
+        id: null,
       });
     },
     [signup.pending]: (state, action) => {
@@ -127,6 +132,7 @@ export const authSlice = createSlice({
         lastName: "",
         email: "",
         usertype: "",
+        id: null,
       });
     },
     [signup.fulfilled]: (state, action) => {
@@ -139,6 +145,7 @@ export const authSlice = createSlice({
         lastName: action.payload.user.lastname,
         email: action.payload.user.email,
         usertype: action.payload.user.usertype,
+        id: action.payload.user._id,
       });
     },
     [signup.rejected]: (state, action) => {
@@ -150,6 +157,7 @@ export const authSlice = createSlice({
         lastName: "",
         email: "",
         usertype: "",
+        id: null,
       });
     },
   },
@@ -161,3 +169,4 @@ export const getName = (state) => state.auth.firstName;
 export const getEmail = (state) => state.auth.email;
 export const { logoutUser } = authSlice.actions;
 export const getUserType = (state) => state.auth.usertype;
+export const getUserId = (state) => state.auth.id;

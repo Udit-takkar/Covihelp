@@ -6,8 +6,13 @@ import { makeStyles } from "@material-ui/core/styles";
 // import turf, { point, distance } from "@turf/turf";
 import { clustersDbscan, point, distance } from "@turf/turf";
 import DriverCard from "./DriverCard";
-import { useHistory } from "react-router-dom";
+import { useHistory, Redirect } from "react-router-dom";
 import LocationServiceApi from "../api/LocationService";
+import { getAmbulance } from "../api/BookingService";
+import { getUserId } from "../features/authentication/auth";
+import { useSelector, useDispatch } from "react-redux";
+import UserServiceApi from "../api/UserServiceApi";
+import { createbooking } from "../features/booking/Booking";
 
 const useStyles = makeStyles({
   root: {
@@ -36,76 +41,47 @@ const useStyles = makeStyles({
 
 function Booking() {
   let history = useHistory();
+  const dispatch = useDispatch();
   const classes = useStyles();
   const [address, setAddress] = useState("");
   const [isLoaded, setLoading] = useState(false);
   const [drivers, setDrivers] = useState([]);
   const [CustomerCoordinates, setCoordinates] = useState([]);
-  // const sortedDistances = [
-  //   { id: 1, distance: 20, name: "satish", address: "Bihar", coordinates: [] },
-  //   { id: 3, distance: 35, name: "Ramesh", address: "Delhi", coordinates: [] },
-  //   {
-  //     id: 2,
-  //     distance: 99,
-  //     name: "Shobhit",
-  //     address: "Rohini",
-  //     coordinates: [],
-  //   },
-  // ];
+  const userId = useSelector(getUserId);
+
   const handleClick = async (e) => {
-    // const sortedDistances = [
-    //   {
-    //     id: 3,
-    //     distance: 35,
-    //     name: "satish",
-    //     address: "Bihar",
-    //     coordinates: [],
-    //   },
-    //   {
-    //     id: 1,
-    //     distance: 20,
-    //     name: "Ramesh",
-    //     address: "Delhi",
-    //     coordinates: [],
-    //   },
-    //   {
-    //     id: 2,
-    //     distance: 99,
-    //     name: "Shobhit",
-    //     address: "Rohini",
-    //     coordinates: [],
-    //   },
-    // ];
-    // sortedDistances.sort(function (a, b) {
-    //   if (a.distance < b.distance) {
-    //     return 1;
-    //   } else if (a.distance > b.distance) {
-    //     return -1;
-    //   } else return 0;
-    // });
     const addressCoordinates = await LocationServiceApi.getGeocodeFromAddress(
       address
     );
-    setCoordinates(addressCoordinates);
+
+    setCoordinates(addressCoordinates.data.features[0].center);
     const sortDistances = await LocationServiceApi.getClosestLocations(
-      addressCoordinates
+      addressCoordinates.data.features[0].center
     );
+    console.log(sortDistances);
     setDrivers(sortDistances);
   };
 
-  const confirmBooking = ({ id, name, address, coordinates, distance }) => {
+  const confirmBooking = async (id) => {
     // Dispatch Booking  HERE
 
-    // Then redirect to Map or Save these coordinates in store
-    history.push({
-      pathname: "/mydashboard",
-      state: {
-        startCoordinates: CustomerCoordinates,
-        DestCoordinates: coordinates,
-        name,
-        address,
-      },
-    });
+    const ambulance = await getAmbulance(id);
+    try {
+      const res = await dispatch(
+        createbooking({
+          user: userId,
+          ambulance: id,
+          userCoordinates: CustomerCoordinates,
+          ambulanceCoordinates: ambulance.ambulance.coordinates,
+        })
+      );
+      console.log(res);
+      if (res.type === "booking/createbooking/fulfilled") {
+        history.push("/dashboard");
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -138,12 +114,13 @@ function Booking() {
           drivers.map((driver) => {
             return (
               <DriverCard
-                key={driver.id}
+                key={driver._id}
                 name={driver.name}
                 address={driver.address}
                 coordinates={driver.coordinates}
                 confirmBooking={confirmBooking}
-                id={driver.id}
+                id={driver._id}
+                distance={driver.distance}
               />
             );
           })

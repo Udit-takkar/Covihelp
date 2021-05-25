@@ -132,7 +132,6 @@ export default function LogIn() {
               <option aria-label="None" value="" />
               <option value={"Admin"}>Admin</option>
               <option value={"Customer"}>Customer</option>
-              <option value={"Driver"}>Driver</option>
             </Select>
           </FormControl>
           {/* <FormControlLabel

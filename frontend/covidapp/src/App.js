@@ -10,6 +10,7 @@ import AuthenticatedRoute from "./AuthenticatedRoute";
 import MyProfile from "./components/MyProfile";
 import DashBoard from "./components/DashBoard";
 import MyBookingPage from "./components/BookingPage";
+import DriverSignup from "./components/DriverSignup";
 
 function App() {
   const isUserStaff = false;
@@ -21,6 +22,7 @@ function App() {
           <Route exact path="/" component={Landing} />
           <Route path="/signup" component={SignUp} />
           <Route path="/login" component={Login} />
+          <Route path="/driversignup" component={DriverSignup} />
           {/* <Route path="/locations/:id" component={LocationShowPage} /> */}
           <Route path="/locations" component={SearchableMap} />
           {!isUserStaff && (

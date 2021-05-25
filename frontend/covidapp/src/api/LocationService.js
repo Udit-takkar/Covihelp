@@ -2,7 +2,8 @@
 import axios from "axios";
 import { clustersDbscan, point, distance } from "@turf/turf";
 
-const api_url = process.env.server_url || "http://localhost:8000/api/locations";
+const api_url =
+  process.env.server_url || "http://localhost:8000/api/ambulances";
 
 class LocationServiceApi {
   getAllLocations() {
@@ -13,20 +14,30 @@ class LocationServiceApi {
   //     return axios.get(`${api_url}/${id}`);
   // }
 
-  getClosestLocations(intialCoordinates) {
+  async getClosestLocations(intialCoordinates) {
     var from = point(intialCoordinates);
+    console.log(intialCoordinates);
     const sortedDistances = [];
-    const locations = fetch(api_url).then((res) => res.json()); // get all drivers Location
-    locations.map((location) => {
-      var to = location.coordinates;
+    const locations = await axios.get(api_url);
+
+    // get all drivers Location
+    const ambulances = locations.data.ambulances;
+    console.log(ambulances);
+    ambulances.map((ambulance) => {
+      var to = ambulance.coordinates;
+
       var Calcdistance = distance(from, to);
 
       return sortedDistances.push({
         distance: Calcdistance,
-        _id: location._id,
-        name: location.name,
-        address: location.address,
-        coordinates: location.coordinates,
+        _id: ambulance._id,
+        name: ambulance.driversName,
+        address: ambulance.address,
+        coordinates: ambulance.coordinates,
+        numberplate: ambulance.numberplate,
+        contact: ambulance.contact,
+        available: ambulance.available,
+        password: ambulance.password,
       });
       //   console.log(Calcdistance);
     });
@@ -39,10 +50,6 @@ class LocationServiceApi {
       } else return 0;
     });
     return sortedDistances;
-
-    // var options = { units: "miles" };
-    // var distances = distance(from, to);
-    // console.log(distances);
   }
 
   getGeocodeFromAddress(address) {

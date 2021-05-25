@@ -16,10 +16,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { signup } from "../features/authentication/auth";
 import { Alert } from "@material-ui/lab";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    marginTop: "125px",
+    marginTop: "85px",
     minWidth: "45vw",
     backgroundColor: "white",
   },
@@ -36,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
+    width: "100%",
     marginTop: theme.spacing(3),
   },
   submit: {
@@ -50,42 +52,47 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "space-between",
   },
+  contact: {
+    height: "100px",
+  },
 }));
 
-export default function SignUp() {
+export default function DriverSignup() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState(null);
   const [formState, setFormState] = useState({
-    firstname: "",
-    lastname: "",
-    email: "",
+    numberplate: "",
+    driversName: "",
+    contact: null,
+    address: "",
+    available: false,
     password: "",
-    usertype: "",
   });
   const handleChange = (e) => {
     setFormState({ ...formState, [e.target.name]: e.target.value });
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(formState);
+    // const res = await dispatch(signup(formState));
+    // console.log(res);
 
-    const res = await dispatch(signup(formState));
-    console.log(res);
-
-    if (res.type === "auth/signup/rejected") {
-      setErrorMessage(res.payload);
-      console.log(res.payload);
-    } else {
-      console.log(res.payload);
-      setErrorMessage(null);
-      setFormState({
-        firstname: "",
-        lastname: "",
-        email: "",
-        password: "",
-        usertype: "",
-      });
-    }
+    // if (res.type === "auth/signup/rejected") {
+    //   setErrorMessage(res.payload);
+    //   console.log(res.payload);
+    // } else {
+    //   console.log(res.payload);
+    //   setErrorMessage(null);
+    //   setFormState({
+    //     numberplate: "",
+    // driversName: "",
+    // contact: null,
+    // address: "",
+    // available: false,
+    // password: "",
+    //   });
+    // }
   };
   return (
     <Container component="main" maxWidth="xs" className={classes.root}>
@@ -103,28 +110,34 @@ export default function SignUp() {
             <Grid item xs={12} sm={6}>
               <TextField
                 autoComplete="fname"
-                name="firstname"
+                name="driversName"
                 variant="outlined"
                 required
                 fullWidth
-                id="firstname"
-                label="First Name"
-                value={formState.firstname}
+                id="driversName"
+                label="Driver Name"
+                value={formState.driversName}
                 onChange={handleChange}
                 autoFocus
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="lastname"
-                label="Last Name"
-                name="lastname"
-                value={formState.lastname}
-                onChange={handleChange}
-                autoComplete="lname"
+              <PhoneInput
+                className={classes.contact}
+                inputProps={{
+                  name: "contact",
+                  required: true,
+                  autoFocus: true,
+                }}
+                placeholder="Contact Number"
+                value={formState.contact}
+                onChange={(e) => setFormState({ ...formState, contact: e })}
+                inputStyle={{
+                  height: "55px",
+                  width: "275px",
+                }}
+                disableCountryCode="true"
+                disableDropdown="true"
               />
             </Grid>
             <Grid item xs={12}>
@@ -132,12 +145,23 @@ export default function SignUp() {
                 variant="outlined"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                value={formState.email}
+                id="address"
+                label="Address"
+                name="address"
+                value={formState.address}
                 onChange={handleChange}
-                autoComplete="email"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="numberplate"
+                label="Number Plate"
+                name="numberplate"
+                value={formState.numberplate}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -154,27 +178,27 @@ export default function SignUp() {
                 autoComplete="current-password"
               />
             </Grid>
-          </Grid>
-          <Grid item xs={12}>
             <FormControl variant="outlined" className={classes.formControl}>
               <InputLabel htmlFor="outlined-age-native-simple">
-                Select Account Type
+                Available Now
               </InputLabel>
               <Select
                 native
-                value={formState.usertype}
+                value={formState.available}
                 onChange={handleChange}
                 label="usertype"
                 inputProps={{
-                  name: "usertype",
+                  name: "available",
                   id: "outlined-age-native-simple",
                 }}
               >
                 <option aria-label="None" value="" />
-                <option value={"Customer"}>Customer</option>
+                <option value={"Yes"}>Yes</option>
+                <option value={"No"}>No</option>
               </Select>
             </FormControl>
           </Grid>
+
           <Button
             type="submit"
             fullWidth
@@ -187,11 +211,11 @@ export default function SignUp() {
           </Button>
           <Grid container justify="flex-end">
             <Grid container className={classes.subLink}>
-              <Link href="/login" variant="body2">
+              <Link href="/driverlogin" variant="body2">
                 Already have an account? Sign in
               </Link>
-              <Link href="/driversignup" variant="body2">
-                Sign Up as a Driver
+              <Link href="/signup" variant="body2">
+                Sign Up as a Customer
               </Link>
             </Grid>
           </Grid>

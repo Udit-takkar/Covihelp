@@ -11,6 +11,13 @@ import LocationServiceApi from "../api/LocationService";
 import { useLocation } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import { Redirect } from "react-router-dom";
+import {
+  getUserCoordinates,
+  ambulanceCoordinates,
+  getBookingStatus,
+  getAmbulance,
+} from "../features/booking/Booking";
+import { useSelector } from "react-redux";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
@@ -52,8 +59,12 @@ const useStyles = makeStyles({
 function DashBoard() {
   const mapRef = useRef();
   const classes = useStyles();
-  const location = useLocation();
-  const [showMap, setShowMap] = useState(false);
+
+  const [showBooking, setShowBooking] = useState(false);
+  const intialCoordinates = useSelector(getUserCoordinates);
+  const finalCoordinates = useSelector(ambulanceCoordinates);
+  const status = useSelector(getBookingStatus);
+  const ambulance = useSelector(getAmbulance);
 
   useEffect(() => {
     const initializeMap = () => {
@@ -72,21 +83,43 @@ function DashBoard() {
       map.on("load", function () {
         // directions.setOrigin([77.0878, 28.6219]);
         // directions.setDestination([77.0929, 28.6691]);
-        directions.setOrigin(location.state.startCoordinates);
-
-        directions.setDestination(location.state.DestCoordinates);
+        directions.setOrigin(intialCoordinates);
+        directions.setDestination(finalCoordinates);
       });
 
       map.addControl(directions, "top-left");
     };
-    if (location.state !== undefined) {
-      setShowMap(true, initializeMap());
+    if (status === "booked") {
+      console.log(intialCoordinates);
+      setShowBooking(true, initializeMap());
     }
-  }, []);
+    console.log(status);
+  }, [status]);
 
   return (
     <div className={classes.root}>
-      {!showMap ? (
+      {showBooking ? (
+        <Grid
+          className={classes.container}
+          direction="column"
+          container
+          justify="center"
+          alignItems="center"
+        >
+          <Typography className={classes.details} variant="h5" gutterBottom>
+            <strong> Driver Name</strong> :{ambulance.driversName}
+          </Typography>
+          <Typography className={classes.details} variant="h5" gutterBottom>
+            <strong> Address</strong> :{ambulance.address}
+          </Typography>
+          <Typography className={classes.details} variant="h5" gutterBottom>
+            <strong> Number Plate</strong> :{ambulance.numberplate}
+          </Typography>
+          <Typography className={classes.details} variant="h5" gutterBottom>
+            <strong> Contact</strong> :{ambulance.contact}
+          </Typography>
+        </Grid>
+      ) : (
         <Grid container justify="center" alignItems="center">
           <Typography
             className={classes.details}
@@ -97,29 +130,13 @@ function DashBoard() {
             <strong> First Place Booking To See Dashboard</strong>
           </Typography>
         </Grid>
-      ) : (
-        <>
-          <Grid
-            className={classes.container}
-            direction="column"
-            container
-            justify="center"
-            alignItems="center"
-          >
-            <Typography className={classes.details} variant="h5" gutterBottom>
-              <strong> Driver Name</strong> :{/* {location.state.name} */}
-            </Typography>
-            <Typography className={classes.details} variant="h5" gutterBottom>
-              <strong> Address</strong> :{/* {location.state.address} */}
-            </Typography>
-          </Grid>
-          <div
-            style={{ width: "100vw", height: " 100vh" }}
-            ref={mapRef}
-            className="mapWrapper"
-          />
-        </>
       )}
+
+      <div
+        style={{ width: "100vw", height: " 100vh" }}
+        ref={mapRef}
+        className="mapWrapper"
+      />
     </div>
   );
 }

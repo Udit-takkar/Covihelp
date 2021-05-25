@@ -82,4 +82,21 @@ router.post(
   }
 );
 
+router.get("/:id", (req, res, next) => {
+  const id = req.params.id;
+  User.findOne({ _id: id })
+    .then((user) => {
+      const response = {
+        user: user,
+      };
+      res.status(200).json(user);
+    })
+    .catch((error) => {
+      // return error if there's any
+      res
+        .status(500)
+        .json({ message: `Unable to GET User of id '${id}'`, error: error });
+    });
+});
+
 module.exports = router;

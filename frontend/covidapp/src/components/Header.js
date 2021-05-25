@@ -44,6 +44,7 @@ function Header() {
   const dispatch = useDispatch();
   const checkLoggedIn = useSelector(isUserLoggedIn);
   const usertype = useSelector(getUserType);
+  const isUserDriver = true; /////
   const handleLogout = async () => {
     localStorage.removeItem("token");
     await dispatch(logoutUser());
